@@ -2,7 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define DELIM_STR "|"
+#define COMP_REG 64
+
+struct
+{
+    int cont_reg;
+} cab;
+
 void importacao(char argv[]);
+int le_campos(char buffer[], int size, FILE *entrada);
 
 int main(int argc, char *argv[])
 {
@@ -41,9 +50,44 @@ void importacao(char argv[])
 {
     FILE *entrada;
     FILE *saida;
+    char campo[COMP_REG + 1];
+    char buffer[COMP_REG + 1];
+    int cont = 0;
 
     entrada = fopen(argv, "r");
-    saida = fopen("dados.dat", "ab");
 
-    
+    while (le_campos(campo, COMP_REG, entrada) > 0)
+    {
+        strcpy(buffer, campo);
+        strcpy(buffer, "|");
+        cont++;
+        
+        printf("campo #%i: %s\n", cont, campo);
+    }
+
+    fclose(entrada);
+    fclose(saida);
+}
+
+int le_campos(char campo[], int size, FILE *entrada)
+{
+    int i = 0;
+    char c = fgetc(entrada);
+
+    while (c != EOF && c != '|')
+    {
+        if (i <= size - 1)
+        {
+            campo[i] = c;
+            i++;
+        }
+        c = fgetc(entrada);
+    }
+    campo[i] = '\0';
+    return i;
+}
+
+void campos()
+{
+
 }
