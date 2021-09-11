@@ -52,17 +52,29 @@ void importacao(char argv[])
     FILE *saida;
     char campo[COMP_REG + 1];
     char buffer[COMP_REG + 1];
-    int cont = 0;
+    int i, cont = 1;
 
     entrada = fopen(argv, "r");
 
-    while (le_campos(campo, COMP_REG, entrada) > 0)
+    while (cont > 0)
     {
-        strcpy(buffer, campo);
-        strcpy(buffer, "|");
-        cont++;
-        
-        printf("campo #%i: %s\n", cont, campo);
+        buffer[0] = '\0';
+        for(i = 0; i < 4; i++)
+        {
+            cont = le_campos(campo, COMP_REG, entrada);
+            strcat(buffer, campo);
+            strcat(buffer, "|");
+        }
+        i = 0;
+        printf("%s\n", buffer);
+        //     strcat(buffer, campo);
+        //     // printf("%s\n", buffer);
+        //     strcat(buffer, "|");
+        //     printf("teste\n");
+        //     cont++;
+        //     printf("%s", buffer);
+
+        // printf("campo #%i: %s\n", cont++, campo);
     }
 
     fclose(entrada);
