@@ -52,9 +52,10 @@ void importacao(char argv[])
     FILE *saida;
     char campo[COMP_REG + 1];
     char buffer[COMP_REG + 1];
-    int i, cont = 1;
+    int i, byte_offset, cont = 1;
 
     entrada = fopen(argv, "r");
+    saida = fopen("dados.dat", "w+b");
 
     while (cont > 0)
     {
@@ -62,19 +63,19 @@ void importacao(char argv[])
         for(i = 0; i < 4; i++)
         {
             cont = le_campos(campo, COMP_REG, entrada);
-            strcat(buffer, campo);
-            strcat(buffer, "|");
+            if(cont != 0)
+            {
+                strcat(buffer, campo);
+                strcat(buffer, "|");
+            }
         }
         i = 0;
+        
+        byte_offset = cab.cont_reg * COMP_REG + sizeof(cab);
+        fseek(saida, (long) byte_offset, SEEK_SET);
+        fwrite(buffer, COMP_REG, 1, saida);
+        cab.cont_reg++;
         printf("%s\n", buffer);
-        //     strcat(buffer, campo);
-        //     // printf("%s\n", buffer);
-        //     strcat(buffer, "|");
-        //     printf("teste\n");
-        //     cont++;
-        //     printf("%s", buffer);
-
-        // printf("campo #%i: %s\n", cont++, campo);
     }
 
     fclose(entrada);
@@ -99,7 +100,3 @@ int le_campos(char campo[], int size, FILE *entrada)
     return i;
 }
 
-void campos()
-{
-
-}
