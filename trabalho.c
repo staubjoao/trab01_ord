@@ -14,9 +14,9 @@ struct
 
 void importacao(char argv[]);
 int le_campos(char buffer[], int size, FILE *entrada);
-int checkIfFileExists(const char *filename);
+int checkIf_file_exists(const char *filename);
+void leia_op(char argv[]);
 void imprimePed();
-int leia(char buffer[], int size, FILE *entrada);
 
 int main(int argc, char *argv[])
 {
@@ -29,21 +29,20 @@ int main(int argc, char *argv[])
     }
     else if (argc == 3 && strcmp(argv[1], "-e") == 0)
     {
-
         printf("Modo de execucao de operacoes ativado ... nome do arquivo = %s\n", argv[2]);
-        if (checkIfFileExists(argv[2]) == 0)
+        if (checkIf_file_exists(argv[2]) == 0)
         {
             printf("O arquivo não exite!");
             return 0;
         }
         else
-            imprimePed();
+            leia_op(argv[2]);
     }
     else if (argc == 2 && strcmp(argv[1], "-p") == 0)
     {
 
         printf("Modo de impressao da PED ativado ...\n");
-        if (checkIfFileExists(argv[2]) == 0)
+        if (checkIf_file_exists(argv[2]) == 0)
         {
             printf("O arquivo não exite!");
             return 0;
@@ -123,7 +122,7 @@ int le_campos(char campo[], int size, FILE *entrada)
     return i;
 }
 
-int checkIfFileExists(const char *filename)
+int checkIf_file_exists(const char *filename)
 {
     struct stat buffer;
     int exist = stat(filename, &buffer);
@@ -133,23 +132,40 @@ int checkIfFileExists(const char *filename)
         return 0;
 }
 
-int leia(char buffer[], int size, FILE *entrada)
+void leia_op(char argv[])
+{
+    FILE *entrada;
+
+    entrada = fopen(argv, "r");
+
+    int len = COMP_REG + 3;
+    char linha[len];
+
+    while(!feof(entrada))
+    {
+        le_linha(linha, len, entrada);
+        printf("%s\n", linha);
+    }
+}
+
+int le_linha(char linha[], int len, FILE *entrada)
 {
     int i = 0;
-    int num;
-    fread(&num, sizeof(short), 1, entrada);
-
-    if (feof(entrada) != 0)
-        return 0;
-    if (num < size)
+    char c = fgetc(entrada);
+    if(c != EOF)
     {
-        fread(buffer, sizeof(char), num, entrada);
-        buffer[num] = '\0';
-        return num;
-    }
-    else
+        while (c != '\n')
+        {
+            linha[i] = c;
+            i++;
+            c = fgetc(entrada);
+        }
+        linha[i] = '\0';
+        return i;
+    }else
         return 0;
 }
+
 
 void imprimePed()
 {
