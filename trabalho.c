@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <windows.h>
 
 #define DELIM_STR '|'
 #define COMP_REG 64
@@ -19,7 +20,7 @@ int leia(char buffer[], int size, FILE *entrada);
 
 int main(int argc, char *argv[])
 {
-
+    SetConsoleOutputCP(65001);
     if (argc == 3 && strcmp(argv[1], "-i") == 0)
     {
 
@@ -67,12 +68,14 @@ void importacao(char argv[])
     FILE *entrada;
     FILE *saida;
     char campo[COMP_REG];
-    char buffer[COMP_REG + 1];
+    char buffer[COMP_REG + 1], l[2];
     int i, byte_offset, cont;
 
     entrada = fopen(argv, "r");
     saida = fopen("dados.dat", "w+b");
 
+    l[0] = DELIM_STR;
+    l[1] = '\0';
     do
     {
         buffer[0] = '\0';
@@ -82,7 +85,7 @@ void importacao(char argv[])
             if (cont > 0)
             {
                 strcat(buffer, campo);
-                strcat(buffer, "|");
+                strcat(buffer, l);
             }
         }
 
@@ -93,7 +96,6 @@ void importacao(char argv[])
             fwrite(buffer, COMP_REG, 1, saida);
             cab.cont_reg++;
             i = 0;
-            printf("%d\n", cont);
         }
 
     } while (cont > 0);
@@ -107,7 +109,7 @@ int le_campos(char campo[], int size, FILE *entrada)
     int i = 0;
     char c = fgetc(entrada);
 
-    while (c != EOF && c != '|')
+    while (c != EOF && c != DELIM_STR)
     {
         if (i <= size - 1)
         {
