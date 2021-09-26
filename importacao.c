@@ -31,6 +31,7 @@ void importacao(char argv[])
     } while (j > 0);
 
     rewind(saida);
+    cab.ped = -1;
     fwrite(&cab, sizeof(cab), 1, saida);
 
     fclose(entrada);

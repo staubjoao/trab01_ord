@@ -12,7 +12,7 @@ bool busca(int key)
     int byte_offset, rrn, *tam_reg;
     rrn = 0;
 
-    fread(&cab.cont_reg, sizeof(cab), 1, busca);
+    fread(&cab, sizeof(cab), 1, busca);
     return busca_registro(key, COMP_REG + 1, busca);
 }
 

@@ -7,6 +7,7 @@
 struct
 {
     int cont_reg;
+    int ped;
 } cab;
 
 int cont_seek;
