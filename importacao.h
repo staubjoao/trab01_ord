@@ -6,5 +6,6 @@
 
 void importacao(char argv[]);
 int le_campos(char campo[], int size, FILE *entrada);
+int concat_buffer(char buffer[], FILE *entrada);
 
 #endif
