@@ -9,4 +9,6 @@ struct
     int cont_reg;
 } cab;
 
+int cont_seek;
+
 #endif

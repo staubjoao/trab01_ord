@@ -41,7 +41,8 @@ int main(int argc, char *argv[])
             return 0;
         }
         else
-            imprimePed();
+        {
+        }
     }
     else
     {
@@ -61,8 +62,8 @@ void leia_op(char argv[])
 
     entrada = fopen(argv, "r");
 
-    int i, j = 2, len = COMP_REG + 3, num;
-    char linha[len], num_str[6];
+    int i, j = 2, len = COMP_REG + 3, key;
+    char linha[len], key_str[6];
 
     while (!feof(entrada))
     {
@@ -72,13 +73,19 @@ void leia_op(char argv[])
         case 'b':
             for (i = 0; i < 6; i++)
             {
-                num_str[i] = linha[j];
+                key_str[i] = linha[j];
                 j++;
             }
             j = 2;
-            num = atoi(num_str);
-            itoa(num, num_str, 10);
-            busca_registro(num_str, COMP_REG);
+            key = atoi(key_str);
+            printf("\nBusca pelo registro de chave '%d'\n", key);
+            if(busca(key))
+            {
+                printf("achou\n");
+            }else
+            {
+                printf("ñ achou\n");
+            }
             break;
         case 'i':
             break;
@@ -90,8 +97,6 @@ void leia_op(char argv[])
 
     fclose(entrada);
 }
-
-
 
 int le_linha(char linha[], int len, FILE *entrada)
 {

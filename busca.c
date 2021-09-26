@@ -2,33 +2,47 @@
 #include "busca.h"
 
 #include <stdbool.h>
+#include <string.h>
 
-bool busca_registro(char key[], int tam_reg)
+bool busca(int key)
 {
     FILE *busca;
-    busca = fopen("dadaos.dat", "r+b");
+    busca = fopen("dados.dat", "r+b");
 
+    int byte_offset, rrn, *tam_reg;
+    rrn = 0;
+
+    fread(&cab.cont_reg, sizeof(cab), 1, busca);
+    return busca_registro(key, COMP_REG + 1, busca);
+}
+
+bool busca_registro(int key, int tam_reg, FILE *busca)
+{
     bool achou = false;
-    char buffer[COMP_REG + 1], aux[COMP_REG + 1];
+    char buffer[COMP_REG + 1], aux[COMP_REG + 1], l[2];
     char *key_buffer;
-    ;
-    int comp_reg, var, posicao_de_leitura, teste; //posicao_de_leitura vai ser usada depois
+    int byte_offset, key_busca;
 
-    printf("\nBusca pelo registro de chave '%s'\n", key);
+    l[0] = DELIM_STR;
+    l[1] = '\0';
 
-    fseek(busca, sizeof(cab), SEEK_SET);
-    comp_reg = leia(buffer, COMP_REG + 1, busca);
-
-    while (achou == false && comp_reg > 0)
+    cont_seek = 0;
+    while (!achou && cont_seek <= cab.cont_reg)
     {
-        key = strtok(buffer, "|");
-        if (strcmp(key, key) == 1)
+        byte_offset = cont_seek * COMP_REG + sizeof(cab);
+        fread(buffer, COMP_REG, 1, busca);
+        strcpy(aux, buffer);
+        strtok(buffer, l);
+        key_busca = atoi(buffer);
+        if (key_busca == key)
         {
+            printf("valor: %s %d %d\n", aux, byte_offset, cont_seek);
             achou = true;
+            mostrar(busca, byte_offset);
         }
         else
         {
-            comp_reg = leia(buffer, COMP_REG + 1, busca);
+            cont_seek++;
         }
     }
 
@@ -42,35 +56,19 @@ bool busca_registro(char key[], int tam_reg)
     }
 }
 
-int leia(char buffer[], int size, FILE *entrada)
-{
-    short num;
-    fread(&num, sizeof(short), 1, entrada);
-
-    if (feof(entrada) != 0)
-        return 0;
-    if (num < size)
-    {
-        fread(buffer, sizeof(char), num, entrada);
-        buffer[num] = '\0';
-        return num;
-    }
-    else
-        return 0;
-}
-
-void le_mostra(FILE *entrada)
+void mostrar(FILE *arq, int byte_offset)
 {
     char buffer[COMP_REG + 1];
     char *campo;
 
-    fread(buffer, COMP_REG, 1, entrada);
+    fseek(arq, (long)byte_offset, SEEK_SET);
+    fread(buffer, COMP_REG, 1, arq);
 
-    printf("\nConteudo do registro\n");
+    printf("Conteudo do registro\n");
     campo = strtok(buffer, "|");
     while (campo != NULL)
     {
-        printf("%s\n", campo);
+        printf("\t%s\n", campo);
         campo = strtok(NULL, "|");
     }
 }
