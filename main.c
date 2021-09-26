@@ -5,19 +5,12 @@
 #include <windows.h>
 #include <stdbool.h>
 
-#define DELIM_STR '|'
-#define COMP_REG 64
+#include "main.h"
+#include "importacao.h"
 
-struct
-{
-    int cont_reg;
-} cab;
-
-void importacao(char argv[]);
-int le_campos(char buffer[], int size, FILE *entrada);
 void leia_op(char argv[]);
 // void busca(char key[]);
-int leia_reg(char buffer[], int tam, FILE *entrada);
+int leia(char buffer[], int size, FILE *entrada);
 int le_linha(char linha[], int len, FILE *entrada);
 void imprimePed();
 int checkIf_file_exists(const char *filename);
@@ -68,69 +61,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void importacao(char argv[])
-{
-    FILE *entrada;
-    FILE *saida;
-    char campo[COMP_REG];
-    char buffer[COMP_REG + 1], l[2];
-    int i, byte_offset, cont;
-
-    entrada = fopen(argv, "r");
-    saida = fopen("dados.dat", "w+b");
-
-    l[0] = DELIM_STR;
-    l[1] = '\0';
-    do
-    {
-        buffer[0] = '\0';
-        for (i = 0; i < 4; i++)
-        {
-            cont = le_campos(campo, COMP_REG, entrada);
-            if (cont > 0)
-            {
-                strcat(buffer, campo);
-                strcat(buffer, l);
-            }
-        }
-
-        if (cont > 0)
-        {
-            byte_offset = cab.cont_reg * COMP_REG + sizeof(cab);
-            fseek(saida, (long)byte_offset, SEEK_SET);
-            fwrite(buffer, COMP_REG, 1, saida);
-            cab.cont_reg++;
-            i = 0;
-        }
-
-    } while (cont > 0);
-
-    rewind(saida);
-    fwrite(&cab, sizeof(cab), 1, saida);
-
-    fclose(entrada);
-    fclose(saida);
-}
-
-int le_campos(char campo[], int size, FILE *entrada)
-{
-    int i = 0;
-    char c = fgetc(entrada);
-
-    while (c != EOF && c != DELIM_STR)
-    {
-        if (i <= size - 1)
-        {
-            campo[i] = c;
-            i++;
-        }
-        c = fgetc(entrada);
-    }
-
-    campo[i] = '\0';
-    return i;
-}
-
 void leia_op(char argv[])
 {
     FILE *entrada;
@@ -140,7 +70,6 @@ void leia_op(char argv[])
     int i, j = 2, len = COMP_REG + 3, num;
     char linha[len], num_str[6];
 
-    //fazer o seek ler o registro fazer seek para o proximo...
     while (!feof(entrada))
     {
         le_linha(linha, len, entrada);
@@ -177,31 +106,26 @@ bool busca_registro(char key[], int tam_reg)
     char buffer[COMP_REG + 1], aux[COMP_REG + 1];
     char *key_buffer;
     ;
-    int comp_reg, var, posicao_de_leitura;//posicao_de_leitura vai ser usada depois
+    int comp_reg, var, posicao_de_leitura, teste; //posicao_de_leitura vai ser usada depois
 
     printf("\nBusca pelo registro de chave '%s'\n", key);
 
     fseek(busca, sizeof(cab), SEEK_SET);
-    fread(&var, sizeof(short), 1, busca);
-    printf("%d", var);
-    while (achou == false)
+    comp_reg = leia(buffer, COMP_REG + 1, busca);
+
+    while (achou == false && comp_reg > 0)
     {
-        posicao_de_leitura = ftell(busca);
-        fread(buffer, sizeof(char), tam_reg, busca);
-            printf("%s\n", buffer);
-        buffer[var] = '\0';
-
-        if (buffer[0] != '*')
+        key = strtok(buffer, "|");
+        if (strcmp(key, key) == 1)
         {
-            strcpy(aux, buffer);
-            key_buffer = strtok(aux, "|");
-
-            if (strcmp(key, key_buffer))
-            {
-                achou = true;
-            }
+            achou = true;
+        }
+        else
+        {
+            comp_reg = leia(buffer, COMP_REG + 1, busca);
         }
     }
+
     if (achou)
     {
         return true;
@@ -212,49 +136,22 @@ bool busca_registro(char key[], int tam_reg)
     }
 }
 
-int leia_reg(char buffer[], int tam, FILE *entrada)
+int leia(char buffer[], int size, FILE *entrada)
 {
-    int comp_reg;
-    if (fread(&comp_reg, sizeof(int), 1, entrada) == 0)
-    {
+    short num;
+    fread(&num, sizeof(short), 1, entrada);
+
+    if (feof(entrada) != 0)
         return 0;
-    }
-    if (comp_reg < tam)
+    if (num < size)
     {
-        fread(buffer, sizeof(char), comp_reg, entrada);
-        buffer[comp_reg] = '\0';
-        return comp_reg;
+        fread(buffer, sizeof(char), num, entrada);
+        buffer[num] = '\0';
+        return num;
     }
     else
-    {
-        printf("%d\n", comp_reg);
         return 0;
-    }
 }
-
-// int leia_reg(char buffer[], int tam, FILE *entrada)
-// {
-//     rewind(entrada);
-
-//     int comp_reg;
-//     if (fread(&comp_reg, sizeof(int), 1, entrada) != 0)
-//     {
-//         printf("%d\n", comp_reg);
-//         return 0;
-//     }
-
-//     if (comp_reg < tam)
-//     {
-//         printf("%d\n", comp_reg);
-//         fread(buffer, sizeof(char), comp_reg, entrada);
-//         buffer[comp_reg] = '\0';
-//         return comp_reg;
-//     }
-//     else
-//     {
-//         return 0;
-//     }
-// }
 
 void le_mostra(FILE *entrada)
 {
