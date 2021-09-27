@@ -4,6 +4,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void remove_registro(FILE *fp, int *byte_offset, int *cont_seek);
+void remove_registro(FILE *fp, int byte_offset, int *cont_seek);
 
 #endif

@@ -61,30 +61,29 @@ void leia_op(char argv[])
     rewind(fpb);
     fread(&cab, sizeof(cab), 1, fpb);
 
-    printf("%d\n", cab.ped);
-
     int byte_offset, cont_seek, len = COMP_REG + 3, key;
-    char buffer[COMP_REG + 1], linha[len];
+    char op, buffer[COMP_REG + 1], linha[len];
 
     while (!feof(entrada))
     {
         le_linha(linha, len, entrada);
-        switch (linha[0])
+        op = linha[0];
+        switch (op)
         {
-        // case 'b':
-        //     key = retorna_key(linha);
-        //     cont_seek = 0;
-        //     byte_offset = 0;
-        //     printf("Busca pelo registro de chave %d\n", key);
-        //     if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
-        //     {
-        //         printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, cont_seek, byte_offset);
-        //     }
-        //     else
-        //     {
-        //         printf("Erro: registro nao encontrado!\n\n");
-        //     }
-        //     break;
+        case 'b':
+            key = retorna_key(linha);
+            cont_seek = 0;
+            byte_offset = 0;
+            printf("Busca pelo registro de chave %d\n", key);
+            if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
+            {
+                printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, cont_seek, byte_offset);
+            }
+            else
+            {
+                printf("Erro: registro nao encontrado!\n\n");
+            }
+            break;
         case 'i':
             break;
         case 'r':
@@ -92,10 +91,12 @@ void leia_op(char argv[])
             cont_seek = 0;
             byte_offset = 0;
             buffer[0] = '\0';
+            printf("Remocao do registro de chave '%d'\n", key);
             if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
             {
-                printf("teste\n");
-                remove_registro(fpb, &byte_offset, &cont_seek);
+                remove_registro(fpb, byte_offset, &cont_seek);
+                printf("Registro removido!\n");
+                printf("Posicao: RRN = %d (byte-offset %d)\n\n", cont_seek, byte_offset);
             }
             else
             {
@@ -112,7 +113,7 @@ void leia_op(char argv[])
     fclose(fpb);
 }
 
-int le_linha(char linha[], int len, FILE *entrada)
+int le_linha(char linha[], int len, FILE *entrada) //tirar len
 {
     int i = 0;
     char c = fgetc(entrada);
@@ -128,37 +129,42 @@ int le_linha(char linha[], int len, FILE *entrada)
         return i;
     }
     else
-        return 0;
+        return -1;
 }
 
 int retorna_key(char linha[])
 {
-    char *key_str;
+    char key_str[7];
     int i, j = 2;
-    key_str[0] = '\0';
     for (i = 0; i < 6; i++)
     {
         key_str[i] = linha[j];
         j++;
     }
+    key_str[j] = '\0';
     j = 2;
     return atoi(key_str);
 }
 
 void imprime_ped(FILE *fp)
 {
-    int ped;
+    int i = 0, ped, byte_offset;
     rewind(fp);
     fread(&cab, sizeof(cab), 1, fp);
     ped = cab.ped;
 
+    printf("\nped: %d\n", ped);
     while (ped != -1)
     {
-        printf("%d\n", ped);
-        fseek(fp, ped, SEEK_SET);
-        fread(&cab, sizeof(cab), 1, fp);
+        byte_offset = ped * COMP_REG + sizeof(cab) + sizeof(char);
+        fseek(fp, byte_offset, SEEK_SET);
+        fread(&cab.ped, sizeof(cab), 1, fp);
         ped = cab.ped;
+        if (ped != -1)
+            printf("ped: %d\n", ped);
+        i++;
     }
+    printf("Quantidade de espaçoes na PED: %d", i);
 }
 
 int checkIf_file_exists(const char *filename)
