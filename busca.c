@@ -10,9 +10,6 @@ bool busca_registro(char buffer[], int key, FILE *busca, int *byte_offset, int *
     char aux[COMP_REG + 1], l[2];
     int key_busca, i;
 
-    rewind(busca);
-    fread(&cab, sizeof(cab), 1, busca);
-
     l[0] = DELIM_STR;
     l[1] = '\0';
     while (!achou && *cont_seek <= cab.cont_reg)

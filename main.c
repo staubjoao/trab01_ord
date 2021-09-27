@@ -33,14 +33,10 @@ int main(int argc, char *argv[])
     {
 
         printf("Modo de impressao da PED ativado ...\n");
-        if (checkIf_file_exists(argv[2]) == 0)
-        {
-            printf("O arquivo não exite!");
-            return 0;
-        }
-        else
-        {
-        }
+        FILE *fpb;
+        fpb = fopen("dados.dat", "r+b");
+        imprime_ped(fpb);
+        fclose(fpb);
     }
     else
     {
@@ -61,6 +57,11 @@ void leia_op(char argv[])
 
     entrada = fopen(argv, "r");
     fpb = fopen("dados.dat", "r+b");
+
+    rewind(fpb);
+    fread(&cab, sizeof(cab), 1, fpb);
+
+    printf("%d\n", cab.ped);
 
     int byte_offset, cont_seek, len = COMP_REG + 3, key;
     char buffer[COMP_REG + 1], linha[len];
@@ -142,6 +143,22 @@ int retorna_key(char linha[])
     }
     j = 2;
     return atoi(key_str);
+}
+
+void imprime_ped(FILE *fp)
+{
+    int ped;
+    rewind(fp);
+    fread(&cab, sizeof(cab), 1, fp);
+    ped = cab.ped;
+
+    while (ped != -1)
+    {
+        printf("%d\n", ped);
+        fseek(fp, ped, SEEK_SET);
+        fread(&cab, sizeof(cab), 1, fp);
+        ped = cab.ped;
+    }
 }
 
 int checkIf_file_exists(const char *filename)

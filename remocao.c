@@ -14,5 +14,6 @@ void remove_registro(FILE *fp, int *byte_offset, int *cont_seek)
     cab.ped = *byte_offset;
     rewind(fp);
     fwrite(&cab, sizeof(cab), 1, fp);
-    printf("teste %d\n", cab.ped);
+
+    printf("%d %d", cab.ped, *byte_offset);
 }

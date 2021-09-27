@@ -8,6 +8,7 @@
 
 void leia_op(char argv[]);
 int le_linha(char linha[], int len, FILE *entrada);
+void imprime_ped(FILE *fp);
 int checkIf_file_exists(const char *filename);
 
 struct
