@@ -3,6 +3,8 @@
         "initializer_list": "c",
         "stdio.h": "c",
         "busca.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "remocao.h": "c",
+        "main.h": "c"
     }
 }

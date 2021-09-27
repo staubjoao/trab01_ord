@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-bool busca(int key);
-bool busca_registro(int key, int tam_reg, FILE *busca);
-void mostrar(FILE *arq, int byte_offset);
+bool busca_registro(char buffer[], int key, FILE *busca, int *byte_offset, int *cont_seek);
 
 #endif

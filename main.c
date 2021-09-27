@@ -6,10 +6,8 @@
 
 #include "main.h"
 #include "importacao.h"
-
-void leia_op(char argv[]);
-int le_linha(char linha[], int len, FILE *entrada);
-int checkIf_file_exists(const char *filename);
+#include "busca.h"
+#include "remocao.h"
 
 int main(int argc, char *argv[])
 {
@@ -59,43 +57,58 @@ int main(int argc, char *argv[])
 void leia_op(char argv[])
 {
     FILE *entrada;
+    FILE *fpb;
 
     entrada = fopen(argv, "r");
+    fpb = fopen("dados.dat", "r+b");
 
-    int i, j = 2, len = COMP_REG + 3, key;
-    char linha[len], key_str[6];
+    int byte_offset, cont_seek, len = COMP_REG + 3, key;
+    char buffer[COMP_REG + 1], linha[len];
 
     while (!feof(entrada))
     {
         le_linha(linha, len, entrada);
         switch (linha[0])
         {
-        case 'b':
-            for (i = 0; i < 6; i++)
-            {
-                key_str[i] = linha[j];
-                j++;
-            }
-            j = 2;
-            key = atoi(key_str);
-            printf("\nBusca pelo registro de chave '%d'\n", key);
-            if(busca(key))
-            {
-                printf("achou\n");
-            }else
-            {
-                printf("ñ achou\n");
-            }
-            break;
+        // case 'b':
+        //     key = retorna_key(linha);
+        //     cont_seek = 0;
+        //     byte_offset = 0;
+        //     printf("Busca pelo registro de chave %d\n", key);
+        //     if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
+        //     {
+        //         printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, cont_seek, byte_offset);
+        //     }
+        //     else
+        //     {
+        //         printf("Erro: registro nao encontrado!\n\n");
+        //     }
+        //     break;
         case 'i':
             break;
         case 'r':
+            key = retorna_key(linha);
+            cont_seek = 0;
+            byte_offset = 0;
+            buffer[0] = '\0';
+            if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
+            {
+                printf("teste\n");
+                remove_registro(fpb, &byte_offset, &cont_seek);
+            }
+            else
+            {
+                printf("Erro: registro nao encontrado!\n\n");
+            }
+            break;
+        default:
             break;
         }
         linha[0] = '\0';
     }
 
     fclose(entrada);
+    fclose(fpb);
 }
 
 int le_linha(char linha[], int len, FILE *entrada)
@@ -115,6 +128,20 @@ int le_linha(char linha[], int len, FILE *entrada)
     }
     else
         return 0;
+}
+
+int retorna_key(char linha[])
+{
+    char *key_str;
+    int i, j = 2;
+    key_str[0] = '\0';
+    for (i = 0; i < 6; i++)
+    {
+        key_str[i] = linha[j];
+        j++;
+    }
+    j = 2;
+    return atoi(key_str);
 }
 
 int checkIf_file_exists(const char *filename)
