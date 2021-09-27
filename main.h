@@ -7,8 +7,9 @@
 #define COMP_REG 64
 
 void leia_op(char argv[]);
-int le_linha(char linha[], int len, FILE *entrada);
+void le_linha(char linha[], FILE *entrada);
 void imprime_ped(FILE *fp);
+void retorna_registro(char buffer[], char linha[]);
 int checkIf_file_exists(const char *filename);
 
 struct

@@ -8,6 +8,7 @@
 #include "importacao.h"
 #include "busca.h"
 #include "remocao.h"
+#include "insercao.h"
 
 int main(int argc, char *argv[])
 {
@@ -61,15 +62,16 @@ void leia_op(char argv[])
     rewind(fpb);
     fread(&cab, sizeof(cab), 1, fpb);
 
-    int byte_offset, cont_seek, len = COMP_REG + 3, key;
-    char op, buffer[COMP_REG + 1], linha[len];
+    int byte_offset, cont_seek, key;
+    char op, buffer[COMP_REG + 1], linha[COMP_REG + 3];
 
     while (!feof(entrada))
     {
-        le_linha(linha, len, entrada);
+        le_linha(linha, entrada);
         op = linha[0];
         switch (op)
         {
+        //tá feito(?)
         case 'b':
             key = retorna_key(linha);
             cont_seek = 0;
@@ -85,7 +87,22 @@ void leia_op(char argv[])
             }
             break;
         case 'i':
+            buffer[0] = '\0';
+            cont_seek = 0;
+            byte_offset = 0;
+            retorna_registro(buffer, linha);
+            key = retorna_key(linha);
+            printf("Insercao do registro de chave '%d'\n", key);
+            if (insere_registro(fpb, buffer, &byte_offset, &cont_seek))
+            {
+                printf("Local: fim do arquivo\n\n");
+            }
+            else
+            {
+                printf("Local: RRN = %d (byte-offset %d) [reutilizado]\n\n", cont_seek, byte_offset);
+            }
             break;
+        //tá feito(?)
         case 'r':
             key = retorna_key(linha);
             cont_seek = 0;
@@ -113,23 +130,20 @@ void leia_op(char argv[])
     fclose(fpb);
 }
 
-int le_linha(char linha[], int len, FILE *entrada) //tirar len
+void le_linha(char linha[], FILE *entrada) //tirar len
 {
     int i = 0;
     char c = fgetc(entrada);
     if (c != EOF)
     {
-        while (c != '\n')
+        while (c != '\n' || feof(entrada))
         {
             linha[i] = c;
             i++;
             c = fgetc(entrada);
         }
         linha[i] = '\0';
-        return i;
     }
-    else
-        return -1;
 }
 
 int retorna_key(char linha[])
@@ -144,6 +158,18 @@ int retorna_key(char linha[])
     key_str[j] = '\0';
     j = 2;
     return atoi(key_str);
+}
+
+void retorna_registro(char buffer[], char linha[])
+{
+    int i = 0, j = 2;
+
+    while (linha[i] != '\0')
+    {
+        buffer[i] = linha[j];
+        i++;
+        j++;
+    }
 }
 
 void imprime_ped(FILE *fp)

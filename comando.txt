@@ -1,1 +1,1 @@
-gcc main.c busca.c importacao.c remocao.c -g
+gcc main.c busca.c importacao.c remocao.c insercao.c -g

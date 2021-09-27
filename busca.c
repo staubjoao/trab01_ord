@@ -1,7 +1,6 @@
 #include "main.h"
 #include "busca.h"
 
-#include <stdbool.h>
 #include <string.h>
 
 bool busca_registro(char buffer[], int key, FILE *busca, int *byte_offset, int *cont_seek)
