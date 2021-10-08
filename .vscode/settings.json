@@ -5,6 +5,8 @@
         "busca.h": "c",
         "stdbool.h": "c",
         "remocao.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "util.h": "c",
+        "insercao.h": "c"
     }
 }

@@ -14,8 +14,9 @@ struct
 
 struct
 {
-    int *vet_key;
-    int *vet_ped;
+    int *key;
+    int *ped;
 } vet;
+
 
 #endif

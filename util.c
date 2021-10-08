@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 
-#include"main.h"
-#include"util.h"
+#include "main.h"
+#include "util.h"
+#include "busca.h"
+#include "remocao.h"
+#include "insercao.h"
 
 void leia_op(char argv[])
 {
@@ -15,8 +19,23 @@ void leia_op(char argv[])
     rewind(fpb);
     fread(&cab, sizeof(cab), 1, fpb);
 
-    int byte_offset, cont_seek, key;
+    int byte_offset, cont_seek, key, i;
     char op, buffer[COMP_REG + 1], linha[COMP_REG + 3];
+
+    cria_vet(fpb);
+    ordena_vet(0, cab.cont_reg);
+
+    for (i = 0; i < cab.cont_reg; i++)
+    {
+        // printf("%d ", (vet.key[i+1]>vet.key[i]));
+        // if (i < 10)
+        //     printf("%d   %d: %d\n", i, vet.ped[i], vet.key[i]);
+        // else if (i > 9 && i < 100)
+        //     printf("%d  %d: %d\n", i, vet.ped[i], vet.key[i]);
+        // else
+        //     printf("%d %d: %d\n", i, vet.ped[i], vet.key[i]);
+    }
+    // ordena_vet(vet_ped, vet_key, 0, cab.cont_reg);
 
     while (!feof(entrada))
     {
@@ -24,22 +43,31 @@ void leia_op(char argv[])
         op = linha[0];
         switch (op)
         {
-        case 't':
-            cria_vet(fpb);
-            break;
         case 'b':
             key = retorna_key(linha);
             cont_seek = 0;
             byte_offset = 0;
             printf("Busca pelo registro de chave %d\n", key);
-            if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
+            //sequencial
+            // if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
+            // {
+            //     printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, cont_seek, byte_offset);
+            // }
+            // else
+            // {
+            //     printf("Erro: registro nao encontrado!\n\n");
+            // }
+            //binaria
+            i = busca_binaria(key, 0, cab.cont_reg);
+            if(i != -1)
             {
-                printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, cont_seek, byte_offset);
-            }
-            else
-            {
+                rewind(fpb);
+                byte_offset = vet.ped[i] * COMP_REG + sizeof(cab);
+                fseek(fpb, byte_offset, SEEK_SET);
+                fread(buffer, COMP_REG, 1, fpb);
+                printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, vet.ped[i], byte_offset);
+            }else
                 printf("Erro: registro nao encontrado!\n\n");
-            }
             break;
         case 'i':
             buffer[0] = '\0';
