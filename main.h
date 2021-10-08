@@ -12,4 +12,10 @@ struct
     int ped;
 } cab;
 
+struct
+{
+    int *vet_key;
+    int *vet_ped;
+} vet;
+
 #endif

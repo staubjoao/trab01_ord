@@ -24,7 +24,9 @@ void leia_op(char argv[])
         op = linha[0];
         switch (op)
         {
-        //tá feito(?)
+        case 't':
+            cria_vet(fpb);
+            break;
         case 'b':
             key = retorna_key(linha);
             cont_seek = 0;
@@ -55,7 +57,6 @@ void leia_op(char argv[])
                 printf("Local: RRN = %d (byte-offset %d) [reutilizado]\n\n", cont_seek, byte_offset);
             }
             break;
-        //tá feito(?)
         case 'r':
             key = retorna_key(linha);
             cont_seek = 0;

@@ -5,5 +5,8 @@
 #include <stdbool.h>
 
 bool busca_registro(char buffer[], int key, FILE *busca, int *byte_offset, int *cont_seek);
+void cria_vet(FILE *busca);
+void merge(int comeco, int meio, int fim);
+void ordena_vet(int comeco, int fim);
 
 #endif
