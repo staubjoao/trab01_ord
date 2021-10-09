@@ -12,11 +12,4 @@ struct
     int ped;
 } cab;
 
-struct
-{
-    int *key;
-    int *ped;
-} vet;
-
-
 #endif
