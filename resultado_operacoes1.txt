@@ -1,0 +1,47 @@
+Remocao do registro de chave "135220"
+Registro removido!
+Posicao: RRN = 0 (byte-offset 4)
+
+Remocao do registro de chave "113602"
+Registro removido!
+Posicao: RRN = 2 (byte-offset 132)
+
+Remocao do registro de chave "333333"
+Erro: registro nao encontrado!
+
+Busca pelo registro de chave "124101"
+124101|BRUNA MARY DUARTE|FARMACIA|1038,4| (RRN = 216 - byte-offset 13828)
+
+Busca pelo registro de chave "135220"
+Erro: registro nao encontrado!
+
+Busca pelo registro de chave "444444"
+Erro: registro nao encontrado!
+
+Insercao do registro de chave "163613"
+Local: RRN = 2 (byte-offset 132) [reutilizado]
+
+Insercao do registro de chave "113845"
+Local: RRN = 0 (byte-offset 4) [reutilizado]
+
+Insercao do registro de chave "129874"
+Local: fim do arquivo
+
+Busca pelo registro de chave "129874"
+129874|MILANA BERNARTT|AGRONOMIA|684,3| (RRN = 240 - byte-offset 15364)
+
+Remocao do registro de chave "123316"
+Registro removido!
+Posicao: RRN = 6 (byte-offset 388)
+
+Remocao do registro de chave "184590"
+Registro removido!
+Posicao: RRN = 7 (byte-offset 452)
+
+Remocao do registro de chave "113603"
+Registro removido!
+Posicao: RRN = 4 (byte-offset 260)
+
+Remocao do registro de chave "223462"
+Registro removido!
+Posicao: RRN = 5 (byte-offset 324)
