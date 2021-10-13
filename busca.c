@@ -14,7 +14,6 @@ bool busca_registro(char buffer[], int key, FILE *busca, int *byte_offset, int *
 
     l[0] = DELIM_STR;
     l[1] = '\0';
-    rewind(busca);
     while (!achou && *cont_seek <= cab.cont_reg)
     {
         *byte_offset = *cont_seek * COMP_REG + sizeof(cab);

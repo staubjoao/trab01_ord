@@ -32,6 +32,7 @@ void leia_op(char argv[])
             key = retorna_key(linha);
             cont_seek = 0;
             byte_offset = 0;
+            buffer[0] = '\0';
             printf("Busca pelo registro de chave %d\n", key);
             if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
                 printf("%s (RRN = %d - byte-offset %d)\n\n", buffer, cont_seek, byte_offset);
@@ -39,9 +40,9 @@ void leia_op(char argv[])
                 printf("Erro: registro nao encontrado!\n\n");
             break;
         case 'i':
-            buffer[0] = '\0';
             cont_seek = 0;
             byte_offset = 0;
+            buffer[0] = '\0';
             retorna_registro(buffer, linha);
             key = retorna_key(linha);
             printf("Insercao do registro de chave '%d'\n", key);
@@ -62,7 +63,7 @@ void leia_op(char argv[])
             printf("Remocao do registro de chave '%d'\n", key);
             if (busca_registro(buffer, key, fpb, &byte_offset, &cont_seek))
             {
-                remove_registro(fpb, byte_offset, &cont_seek);
+                remove_registro(fpb, byte_offset, cont_seek);
                 printf("Registro removido!\n");
                 printf("Posicao: RRN = %d (byte-offset %d)\n\n", cont_seek, byte_offset);
             }
@@ -81,7 +82,7 @@ void leia_op(char argv[])
     fclose(fpb);
 }
 
-void le_linha(char linha[], FILE *entrada) //tirar len
+void le_linha(char linha[], FILE *entrada)
 {
     int i = 0;
     char c = fgetc(entrada);
@@ -89,8 +90,7 @@ void le_linha(char linha[], FILE *entrada) //tirar len
     {
         while (c != '\n' || feof(entrada))
         {
-            linha[i] = c;
-            i++;
+            linha[i++] = c;
             c = fgetc(entrada);
         }
         linha[i] = '\0';
@@ -99,7 +99,7 @@ void le_linha(char linha[], FILE *entrada) //tirar len
 
 int retorna_key(char linha[])
 {
-    char key_str[7];
+    char key_str[6];
     int i, j = 2;
     for (i = 0; i < 6; i++)
     {
@@ -116,11 +116,7 @@ void retorna_registro(char buffer[], char linha[])
     int i = 0, j = 2;
 
     while (linha[i] != '\0')
-    {
-        buffer[i] = linha[j];
-        i++;
-        j++;
-    }
+        buffer[i++] = linha[j++];
 }
 
 void imprime_ped(FILE *fp)

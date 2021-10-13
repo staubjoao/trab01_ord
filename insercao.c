@@ -6,8 +6,6 @@
 bool insere_registro(FILE *fp, char buffer[], int *byte_offset, int *cont_seek)
 {
     int byte_offset_local, ped;
-    rewind(fp);
-    fread(&cab, sizeof(cab), 1, fp);
 
     if (cab.ped != -1)
     {
