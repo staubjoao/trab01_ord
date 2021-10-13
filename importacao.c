@@ -25,7 +25,6 @@ void importacao(char argv[])
             fseek(saida, (long)byte_offset, SEEK_SET);
             fwrite(buffer, COMP_REG, 1, saida);
             cab.cont_reg++;
-            printf("%s\n", buffer);
         }
     } while (tam_campo > 0);
 

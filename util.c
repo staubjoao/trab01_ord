@@ -126,13 +126,13 @@ void imprime_ped(FILE *fp)
     fread(&cab, sizeof(cab), 1, fp);
     ped = cab.ped;
 
-    printf("\nped: %d\n", ped);
+    if(ped != -1)
+        printf("\nped: %d\n", ped);
     while (ped != -1)
     {
         byte_offset = ped * COMP_REG + sizeof(cab) + sizeof(char);
         fseek(fp, byte_offset, SEEK_SET);
-        fread(&cab.ped, sizeof(cab), 1, fp);
-        ped = cab.ped;
+        fread(&ped, sizeof(int), 1, fp);
         if (ped != -1)
             printf("ped: %d\n", ped);
         i++;
