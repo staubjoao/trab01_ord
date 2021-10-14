@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-#include "main.h"
 #include "util.h"
+#include "main.h"
 #include "busca.h"
 #include "remocao.h"
 #include "insercao.h"

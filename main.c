@@ -7,6 +7,7 @@
 #include "busca.h"
 #include "remocao.h"
 #include "insercao.h"
+#include "util.h"
 
 int main(int argc, char *argv[])
 {
