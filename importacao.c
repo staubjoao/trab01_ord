@@ -1,8 +1,8 @@
-#include "main.h"
-#include "importacao.h"
-
 #include <stdio.h>
 #include <string.h>
+
+#include "main.h"
+#include "importacao.h"
 
 void importacao(char argv[])
 {
